@@ -13,9 +13,6 @@ namespace ThreeSoft.Entities
 
         public DbSet<Note> Notes { get; set; }
 
-
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {            
             base.OnModelCreating(modelBuilder);
@@ -24,35 +21,61 @@ namespace ThreeSoft.Entities
             // Define any additional configuration or relationships here
         }
 
-
-        public static async Task CreateAdminUser(IServiceProvider serviceProvider)
+        public static async Task CreateStaticUsers(IServiceProvider serviceProvider)
         {
             UserManager<User> userManager = serviceProvider.GetRequiredService<UserManager<User>>();
             RoleManager<IdentityRole> roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            string username = "admin";
-            string password = "Admin@1";
-            string roleName = "Teacher";
-            string firstName = "Ronald";
-            string lastName = "McDonald";
-
-            // if role doesn't exist, create it
-            if (await roleManager.FindByNameAsync(roleName) == null)
+            // Static teacher
+            Teacher staticTeacher = new Teacher { UserName = "Admin", firstName = "Ronald", lastName = "McDonald"};
+            // if Teacher role doesn't exist, create it
+            if (await roleManager.FindByNameAsync("Teacher") == null)
             {
-                await roleManager.CreateAsync(new IdentityRole(roleName));
+                await roleManager.CreateAsync(new IdentityRole("Teacher"));
             }
             // if username doesn't exist, create it and add it to role
-            if (await userManager.FindByNameAsync(username) == null)
+            if (await userManager.FindByNameAsync(staticTeacher.UserName) == null)
             {
-                User user = new User { UserName = username, firstName = firstName, lastName = lastName };
-                var result = await userManager.CreateAsync(user, password);
+                var result = await userManager.CreateAsync(staticTeacher, "Admin@1");
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(user, roleName);
+                    await userManager.AddToRoleAsync(staticTeacher, "Teacher");
+                }
+            }
+
+            // Static student
+            Student staticStudent = new Student { UserName = "NotBatman", firstName = "Bruce", lastName = "Wayne" };
+            // if Student role doesn't exist, create it
+            if (await roleManager.FindByNameAsync("Student") == null)
+            {
+                await roleManager.CreateAsync(new IdentityRole("Student"));
+            }
+            // if username doesn't exist, create it and add it to role
+            if (await userManager.FindByNameAsync(staticStudent.UserName) == null)
+            {
+                var result = await userManager.CreateAsync(staticStudent, "Manbat1!");
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(staticStudent, "Student");
+                }
+            }
+
+            // Static parent
+            Parent staticParent = new Parent { UserName = "DeadParent", firstName = "Thomas", lastName = "Wayne" };
+            // if Parent role doesn't exist, create it
+            if (await roleManager.FindByNameAsync("Parent") == null)
+            {
+                await roleManager.CreateAsync(new IdentityRole("Parent"));
+            }
+            // if username doesn't exist, create it and add it to role
+            if (await userManager.FindByNameAsync(staticParent.UserName) == null)
+            {
+                var result = await userManager.CreateAsync(staticParent, "Deaddad!0");
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(staticParent, "Parent");
                 }
             }
         }
-
-
     }
 }

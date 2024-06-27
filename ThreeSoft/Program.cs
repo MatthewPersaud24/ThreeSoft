@@ -49,7 +49,7 @@ app.MapControllerRoute(
 var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
 using (var scope = scopeFactory.CreateScope())
 {
-    await ApplicationDbContext.CreateAdminUser(scope.ServiceProvider);
+    await ApplicationDbContext.CreateStaticUsers(scope.ServiceProvider);
 }
 
 app.Run();

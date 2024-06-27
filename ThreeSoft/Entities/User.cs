@@ -13,7 +13,5 @@ namespace ThreeSoft.Entities
 
         [Required(ErrorMessage = "Please enter a last name")]
         public string? lastName { get; set; }
-        
-
     }
 }
