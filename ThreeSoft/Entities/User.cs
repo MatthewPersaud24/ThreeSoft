@@ -8,10 +8,9 @@ namespace ThreeSoft.Entities
 {
     public class User : IdentityUser
     {
-        [Required(ErrorMessage = "Please enter a first name")]
-        public string? firstName { get; set; }
-
-        [Required(ErrorMessage = "Please enter a last name")]
-        public string? lastName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public ICollection<Classroom> TeacherClassrooms { get; set; }
+        public ICollection<Classroom> StudentClassrooms { get; set; }
     }
 }

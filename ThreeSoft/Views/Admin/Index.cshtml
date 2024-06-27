@@ -1,36 +1,96 @@
-﻿@{
+﻿@model ThreeSoft.Controllers.AdminIndexViewModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<section class="hero">
-    <div class="hero-body">
-        <div class="container">
-            <h1 class="title has-text-centered is-size-1-desktop is-size-2-tablet is-size-3-mobile">Welcome to our website</h1>
-            <h2 class="subtitle has-text-centered is-size-4-desktop is-size-5-tablet is-size-6-mobile">Descriptive Description goes here...</h2>
-            <div class="buttons is-centered">
-                <a href="@Url.Action("List", "Event")" class="button is-primary is-medium">
-                    More description or something...
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+<h1 style ="margin-bottom: 20px;">Hello Admin</h1>
 
 <section class="section">
     <div class="container">
-        <div class="columns is-vcentered">
-            <div class="column is-half has-text-centered">
-                <h3 class="title is-size-4-desktop is-size-5-tablet is-size-6-mobile">What we offer</h3>
-                <p class="subtitle is-size-5-desktop is-size-6-tablet is-size-7-mobile">
-                    We specialize in...
-                </p>
-            </div>
-            <div class="column is-half has-text-centered">
-                <h3 class="title is-size-4-desktop is-size-5-tablet is-size-6-mobile">Why choose us</h3>
-                <p class="subtitle is-size-5-desktop is-size-6-tablet is-size-7-mobile">
-                    Our goal is to...
-                </p>
-            </div>
-        </div>
+
+        <h2 class="subtitle">All Users</h2>
+        <table class="table is-fullwidth is-striped">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Username</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td>@user.FirstName</td>
+                        <td>@user.LastName</td>
+                        <td>@user.UserName</td>
+                        <td>
+                            <form asp-action="DeleteUser" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@user.Id" />
+                                <button type="submit" class="button is-danger is-small">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h2 class="subtitle">All Teachers</h2>
+        <table class="table is-fullwidth is-striped">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Username</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var teacher in Model.Teachers)
+                {
+                    <tr>
+                        <td>@teacher.FirstName</td>
+                        <td>@teacher.LastName</td>
+                        <td>@teacher.UserName</td>
+                        <td>
+                            <form asp-action="DeleteUser" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@teacher.Id" />
+                                <button type="submit" class="button is-danger is-small">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h2 class="subtitle">All Students</h2>
+        <table class="table is-fullwidth is-striped">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Username</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var student in Model.Students)
+                {
+                    <tr>
+                        <td>@student.FirstName</td>
+                        <td>@student.LastName</td>
+                        <td>@student.UserName</td>
+                        <td>
+                            <form asp-action="DeleteUser" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@student.Id" />
+                                <button type="submit" class="button is-danger is-small">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </section>

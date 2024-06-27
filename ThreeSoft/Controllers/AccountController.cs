@@ -20,7 +20,6 @@ namespace ThreeSoft.Controllers
             _userManager = userManager;
         }
 
-
         [HttpGet]
         public IActionResult Register()
         {
@@ -76,13 +75,27 @@ namespace ThreeSoft.Controllers
 
                 if (result.Succeeded)
                 {
+                    var user = await _userManager.FindByNameAsync(model.Username);
+                    var roles = await _userManager.GetRolesAsync(user);
+
                     if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                     {
                         return Redirect(model.ReturnUrl);
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        if (roles.Contains("Admin"))
+                        {
+                            return RedirectToAction("Index", "Admin");
+                        }
+                        else if (roles.Contains("Teacher"))
+                        {
+                            return RedirectToAction("Index", "Teacher");
+                        }
+                        else 
+                        {
+                            return RedirectToAction("Index", "Student");
+                        }
                     }
                 }
             }
@@ -90,7 +103,6 @@ namespace ThreeSoft.Controllers
             ModelState.AddModelError("", "Invalid username/password.");
             return View(model);
         }
-
 
         [HttpGet]
         public ViewResult AccessDenied()

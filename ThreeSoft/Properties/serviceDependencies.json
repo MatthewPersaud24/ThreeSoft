@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:ThreeSoftDB",
+      "dynamicId": null
+    }
+  }
+}

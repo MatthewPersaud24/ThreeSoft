@@ -6,10 +6,18 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ThreeSoft.Entities
 {
-    public class Checklist
+    public class Classroom
     {
+        [Key]
         public int Id { get; set; }
-        public string Task { get; set; }
-        public bool IsCompleted { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        public string TeacherId { get; set; }
+        [ForeignKey("TeacherId")]
+        public User Teacher { get; set; }
+
+        public ICollection<User> Students { get; set; }
     }
 }
