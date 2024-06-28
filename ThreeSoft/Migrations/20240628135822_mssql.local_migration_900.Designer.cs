@@ -12,8 +12,8 @@ using ThreeSoft.Entities;
 namespace ThreeSoft.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240627185016_mssql.local_migration_803")]
-    partial class mssqllocal_migration_803
+    [Migration("20240628135822_mssql.local_migration_900")]
+    partial class mssqllocal_migration_900
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,19 +69,19 @@ namespace ThreeSoft.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "958c748b-92a7-4181-9585-18efc7d264d9",
+                            Id = "5029db1b-6a47-4d04-9e83-a36c90201d29",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "23b26f84-736a-4918-957a-2300f2df96dd",
+                            Id = "887c1840-c6c4-4a3a-b1b1-04c1e7209e22",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = "b969d8ff-1d34-4ef1-ac54-ca82aa74b1f2",
+                            Id = "065aefb1-c4b0-4792-bbaf-d07f971a79ac",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
@@ -193,6 +193,56 @@ namespace ThreeSoft.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ThreeSoft.Entities.Checklist", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Checklists");
+                });
+
+            modelBuilder.Entity("ThreeSoft.Entities.ChecklistTask", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChecklistId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Task")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChecklistId");
+
+                    b.ToTable("ChecklistTasks");
+                });
+
             modelBuilder.Entity("ThreeSoft.Entities.Classroom", b =>
                 {
                     b.Property<int>("Id")
@@ -228,6 +278,9 @@ namespace ThreeSoft.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -280,6 +333,9 @@ namespace ThreeSoft.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("ParentPin")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -379,6 +435,28 @@ namespace ThreeSoft.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ThreeSoft.Entities.Checklist", b =>
+                {
+                    b.HasOne("ThreeSoft.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ThreeSoft.Entities.ChecklistTask", b =>
+                {
+                    b.HasOne("ThreeSoft.Entities.Checklist", "Checklist")
+                        .WithMany("Tasks")
+                        .HasForeignKey("ChecklistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Checklist");
+                });
+
             modelBuilder.Entity("ThreeSoft.Entities.Classroom", b =>
                 {
                     b.HasOne("ThreeSoft.Entities.User", "Teacher")
@@ -399,6 +477,11 @@ namespace ThreeSoft.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ThreeSoft.Entities.Checklist", b =>
+                {
+                    b.Navigation("Tasks");
                 });
 
             modelBuilder.Entity("ThreeSoft.Entities.User", b =>

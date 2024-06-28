@@ -1,36 +1,98 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model ThreeSoft.Models.InteractViewModel
 
-<section class="hero">
-    <div class="hero-body">
-        <div class="container">
-            <h1 class="title has-text-centered is-size-1-desktop is-size-2-tablet is-size-3-mobile">Welcome to our website</h1>
-            <h2 class="subtitle has-text-centered is-size-4-desktop is-size-5-tablet is-size-6-mobile">Descriptive Description goes here...</h2>
-            <div class="buttons is-centered">
-                <a href="@Url.Action("List", "Event")" class="button is-primary is-medium">
-                    More description or something...
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+@{
+    ViewData["Title"] = "Student Dashboard";
+}
 
 <section class="section">
     <div class="container">
-        <div class="columns is-vcentered">
-            <div class="column is-half has-text-centered">
-                <h3 class="title is-size-4-desktop is-size-5-tablet is-size-6-mobile">What we offer</h3>
-                <p class="subtitle is-size-5-desktop is-size-6-tablet is-size-7-mobile">
-                    We specialize in...
-                </p>
-            </div>
-            <div class="column is-half has-text-centered">
-                <h3 class="title is-size-4-desktop is-size-5-tablet is-size-6-mobile">Why choose us</h3>
-                <p class="subtitle is-size-5-desktop is-size-6-tablet is-size-7-mobile">
-                    Our goal is to...
-                </p>
-            </div>
+        <h1 class="title has-text-centered">Welcome @Model.Student.FirstName @Model.Student.LastName</h1>
+
+        <h2 class="subtitle">Notes</h2>
+        <ul>
+            @foreach (var note in Model.Notes)
+            {
+                <li>
+                    @note.Content
+                    <form asp-action="ReplyToNote" method="post" style="display:inline;">
+                        <input type="hidden" name="noteId" value="@note.Id" />
+                        <input type="text" name="reply" placeholder="Reply" class="input is-small" />
+                        <button type="submit" class="button is-small is-primary">Reply</button>
+                    </form>
+                </li>
+            }
+        </ul>
+
+        <h2 class="subtitle">Checklists</h2>
+        <div>
+            @foreach (var checklist in Model.Checklists)
+            {
+                <div class="box">
+                    <h3 class="title is-4">@checklist.Title</h3>
+                    <ul>
+                        @foreach (var task in checklist.Tasks)
+                        {
+                            <li>
+                                @if (task.IsCompleted)
+                                {
+                                    <strike>@task.Task</strike>
+                                }
+                                else
+                                {
+                                    @task.Task
+                                }
+                                <form asp-action="ToggleChecklistTaskCompletion" method="post" style="display:inline;">
+                                    <input type="hidden" name="taskId" value="@task.Id" />
+                                    <button type="submit" class="button is-small is-success">
+                                        @if (task.IsCompleted)
+                                        {
+                                        <span>Undo</span>
+                                                    }
+                                        else
+                                        {
+                                           <span>Complete</span>
+                                                    }
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
         </div>
+
+        <h2 class="subtitle">Parent Messages</h2>
+        @if (string.IsNullOrEmpty(Model.Student.ParentPin))
+        {
+            <form asp-action="SetParentPin" method="post">
+                <div class="field">
+                    <label class="label">Set Parent PIN</label>
+                    <div class="control">
+                        <input type="password" name="parentPin" class="input" placeholder="Enter a PIN" />
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <button type="submit" class="button is-primary">Set PIN</button>
+                    </div>
+                </div>
+            </form>
+        }
+        else
+        {
+            <form asp-action="ViewParentMessages" method="post">
+                <div class="field">
+                    <label class="label">Enter Parent PIN</label>
+                    <div class="control">
+                        <input type="password" name="parentPin" class="input" placeholder="Enter your PIN" />
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <button type="submit" class="button is-primary">View Messages</button>
+                    </div>
+                </div>
+            </form>
+        }
     </div>
 </section>

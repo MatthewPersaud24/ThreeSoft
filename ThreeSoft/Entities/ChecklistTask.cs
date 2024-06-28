@@ -6,20 +6,20 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ThreeSoft.Entities
 {
-    public class Note
+    public class ChecklistTask
     {
         [Key]
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(500)]
-        public string Content { get; set; }
+        [MaxLength(100)]
+        public string Task { get; set; }
 
-        [ForeignKey("User")]
-        public string UserId { get; set; }
+        public bool IsCompleted { get; set; }
 
-        public User User { get; set; }
+        [ForeignKey("Checklist")]
+        public int ChecklistId { get; set; }
 
-        public bool IsLocked { get; set; }
+        public Checklist Checklist { get; set; }
     }
 }

@@ -16,6 +16,10 @@ namespace ThreeSoft.Entities
 
         public DbSet<Classroom> Classrooms { get; set; }
         public DbSet<Note> Notes { get; set; }
+        public DbSet<Checklist> Checklists { get; set; }
+        public DbSet<ChecklistTask> ChecklistTasks { get; set; }
+
+        // Other DbSet properties...
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -66,7 +70,7 @@ namespace ThreeSoft.Entities
             }
 
             // Static Admin user
-            User staticAdmin = new User { UserName = "Admin", FirstName = "Ronald", LastName = "McDonald" };
+            User staticAdmin = new User { UserName = "Admin", FirstName = "Ronald", LastName = "McDonald", ParentPin = "defaultPin" };
             if (await userManager.FindByNameAsync(staticAdmin.UserName) == null)
             {
                 var result = await userManager.CreateAsync(staticAdmin, "Admin@1");

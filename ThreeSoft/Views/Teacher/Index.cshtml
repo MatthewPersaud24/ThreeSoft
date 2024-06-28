@@ -1,7 +1,7 @@
 ﻿@model ThreeSoft.Models.TeacherViewModel
 
 @{
-    ViewData["Title"] = "Teacher Home Page";
+    ViewData["Title"] = "Teacher Dashboard";
 }
 
 <section class="section">
@@ -10,103 +10,87 @@
 
         <h2 class="subtitle">Classrooms</h2>
         <div>
-            <form asp-action="CreateClassroom" method="post" class="field is-grouped">
-                <p class="control is-expanded">
-                    <input class="input" type="text" name="name" placeholder="Classroom Name" required />
-                </p>
-                <p class="control">
-                    <button class="button is-primary" type="submit">Create Classroom</button>
-                </p>
-            </form>
-        </div>
-
-        <div>
             @foreach (var classroom in Model.Classrooms)
             {
                 <div class="box">
-                    <div class="level">
-                        <div class="level-left">
-                            <div class="level-item">
-                                <h3 class="title is-4">@classroom.Name</h3>
-                            </div>
-                        </div>
-                        <div class="level-right">
-                            <div class="level-item">
-                                <form asp-action="DeleteClassroom" method="post" style="display:inline;">
-                                    <input type="hidden" name="id" value="@classroom.Id" />
-                                    <button type="submit" class="button is-danger is-small">Delete</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <button class="button is-link is-small" onclick="document.getElementById('classroom-@classroom.Id').classList.toggle('is-hidden');">
-                            Show Students
-                        </button>
-                        <div id="classroom-@classroom.Id" class="is-hidden">
-                            <table class="table is-fullwidth is-striped">
-                                <thead>
-                                    <tr>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var student in classroom.Students)
-                                    {
-                                        <tr>
-                                            <td>@student.FirstName</td>
-                                            <td>@student.LastName</td>
-                                            <td>
-                                                <form asp-action="RemoveStudentFromClassroom" method="post" style="display:inline;">
-                                                    <input type="hidden" name="classroomId" value="@classroom.Id" />
-                                                    <input type="hidden" name="studentId" value="@student.Id" />
-                                                    <button type="submit" class="button is-danger is-small">Remove</button>
-                                                </form>
-                                                <form asp-action="InteractWithStudent" method="post" style="display:inline;">
-                                                    <input type="hidden" name="studentId" value="@student.Id" />
-                                                    <button type="submit" class="button is-primary is-small">Interact</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                    <h3 class="title is-4">@classroom.Name</h3>
+                    <form asp-action="RenameClassroom" method="post" style="display:inline;">
+                        <input type="hidden" name="classroomId" value="@classroom.Id" />
+                        <input type="text" name="newName" placeholder="Rename Classroom" class="input is-small" />
+                        <button type="submit" class="button is-small is-info">Rename</button>
+                    </form>
+                    <form asp-action="DeleteClassroom" method="post" style="display:inline;">
+                        <input type="hidden" name="classroomId" value="@classroom.Id" />
+                        <button type="submit" class="button is-small is-danger">Delete</button>
+                    </form>
+                    <div class="content">
+                        <h4 class="subtitle is-5">Students</h4>
+                        <ul>
+                            @foreach (var student in classroom.Students)
+                            {
+                                <li>
+                                    @student.FirstName @student.LastName
+                                    <form asp-action="RemoveStudentFromClassroom" method="post" style="display:inline;">
+                                        <input type="hidden" name="studentId" value="@student.Id" />
+                                        <input type="hidden" name="classroomId" value="@classroom.Id" />
+                                        <button type="submit" class="button is-small is-warning">Remove</button>
+                                    </form>
+                                    <form asp-controller="Interact" asp-action="Index" method="get" style="display:inline;">
+                                        <input type="hidden" name="studentId" value="@student.Id" />
+                                        <button type="submit" class="button is-small is-primary">Interact</button>
+                                    </form>
+                                </li>
+                            }
+                        </ul>
                     </div>
                 </div>
             }
         </div>
 
-        <h2 class="subtitle">All Students</h2>
-        <table class="table is-fullwidth is-striped">
-            <thead>
-                <tr>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var student in Model.Students)
-                {
-                    <tr>
-                        <td>@student.FirstName</td>
-                        <td>@student.LastName</td>
-                        <td>
-                            <form asp-action="DeleteStudent" method="post" style="display:inline;">
+        <form asp-action="CreateClassroom" method="post" class="field is-grouped">
+            <div class="control">
+                <input type="text" name="name" placeholder="New Classroom Name" class="input" />
+            </div>
+            <div class="control">
+                <button type="submit" class="button is-primary">Create Classroom</button>
+            </div>
+        </form>
+
+        <h2 class="subtitle">Search Students</h2>
+        <form asp-action="SearchStudents" method="post" class="field has-addons">
+            <div class="control">
+                <input type="text" name="searchTerm" value="@Model.SearchTerm" class="input" placeholder="Search students..." />
+            </div>
+            <div class="control">
+                <button type="submit" class="button is-info">Search</button>
+            </div>
+        </form>
+
+        @if (Model.SearchResults != null && Model.SearchResults.Any())
+        {
+            <div class="box">
+                <h4 class="subtitle is-5">Search Results</h4>
+                <ul>
+                    @foreach (var student in Model.SearchResults)
+                    {
+                        <li>
+                            @student.FirstName @student.LastName
+                            <form asp-action="AddStudentToClassroom" method="post" style="display:inline;">
                                 <input type="hidden" name="studentId" value="@student.Id" />
-                                <button type="submit" class="button is-danger is-small">Delete</button>
+                                <div class="select is-small">
+                                    <select name="classroomId">
+                                        @foreach (var classroom in Model.Classrooms)
+                                        {
+                                            <option value="@classroom.Id">@classroom.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <button type="submit" class="button is-small is-primary">Add to Classroom</button>
                             </form>
-                            <form asp-action="InteractWithStudent" method="post" style="display:inline;">
-                                <input type="hidden" name="studentId" value="@student.Id" />
-                                <button type="submit" class="button is-primary is-small">Interact</button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
     </div>
 </section>

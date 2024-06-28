@@ -2,79 +2,75 @@
 using Microsoft.EntityFrameworkCore;
 using ThreeSoft.Entities;
 using ThreeSoft.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ThreeSoft.Controllers
 {
-    [Authorize(Roles = "Teacher")]
     public class TeacherController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<User> _userManager;
 
-        public TeacherController(ApplicationDbContext context, UserManager<User> userManager)
+        public TeacherController(ApplicationDbContext context)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var classrooms = await _context.Classrooms
-                                           .Include(c => c.Students)
-                                           .Where(c => c.TeacherId == user.Id)
-                                           .ToListAsync();
-            var students = await _userManager.GetUsersInRoleAsync("Student");
+                .Where(c => c.TeacherId == userId)
+                .Include(c => c.Students)
+                .ToListAsync();
+
+            var students = await _context.Users
+                .Where(u => u.StudentClassrooms.Any(sc => sc.TeacherId == userId))
+                .ToListAsync();
 
             var model = new TeacherViewModel
             {
                 Classrooms = classrooms,
-                Students = students.ToList()
+                Students = students,
+                SearchResults = new List<User>()
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateClassroom(string name)
+        public async Task<IActionResult> SearchStudents(string searchTerm)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var classroom = new Classroom
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var classrooms = await _context.Classrooms
+                .Where(c => c.TeacherId == userId)
+                .Include(c => c.Students)
+                .ToListAsync();
+
+            var students = await _context.Users
+                .Where(u => u.StudentClassrooms.Any(sc => sc.TeacherId == userId))
+                .ToListAsync();
+
+            var searchResults = await _context.Users
+                .Where(u => u.FirstName.Contains(searchTerm) || u.LastName.Contains(searchTerm))
+                .ToListAsync();
+
+            var model = new TeacherViewModel
             {
-                Name = name,
-                TeacherId = user.Id
+                Classrooms = classrooms,
+                Students = students,
+                SearchTerm = searchTerm,
+                SearchResults = searchResults
             };
 
-            _context.Classrooms.Add(classroom);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
+            return View("Index", model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteClassroom(int id)
+        public async Task<IActionResult> AddStudentToClassroom(string studentId, int classroomId)
         {
-            var classroom = await _context.Classrooms.FindAsync(id);
-            if (classroom != null)
-            {
-                _context.Classrooms.Remove(classroom);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddStudentToClassroom(int classroomId, string studentId)
-        {
-            var classroom = await _context.Classrooms
-                                          .Include(c => c.Students)
-                                          .FirstOrDefaultAsync(c => c.Id == classroomId);
-            var student = await _userManager.FindByIdAsync(studentId);
+            var classroom = await _context.Classrooms.Include(c => c.Students).FirstOrDefaultAsync(c => c.Id == classroomId);
+            var student = await _context.Users.FindAsync(studentId);
 
             if (classroom != null && student != null)
             {
@@ -82,16 +78,14 @@ namespace ThreeSoft.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public async Task<IActionResult> RemoveStudentFromClassroom(int classroomId, string studentId)
+        public async Task<IActionResult> RemoveStudentFromClassroom(string studentId, int classroomId)
         {
-            var classroom = await _context.Classrooms
-                                          .Include(c => c.Students)
-                                          .FirstOrDefaultAsync(c => c.Id == classroomId);
-            var student = await _userManager.FindByIdAsync(studentId);
+            var classroom = await _context.Classrooms.Include(c => c.Students).FirstOrDefaultAsync(c => c.Id == classroomId);
+            var student = await _context.Users.FindAsync(studentId);
 
             if (classroom != null && student != null)
             {
@@ -99,26 +93,47 @@ namespace ThreeSoft.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public async Task<IActionResult> InteractWithStudent(string studentId)
+        public async Task<IActionResult> RenameClassroom(int classroomId, string newName)
         {
-            // Redirect to a page where teacher can interact with the student (e.g., add notes or checklists)
-            return RedirectToAction("Interact", "Student", new { id = studentId });
-        }
+            var classroom = await _context.Classrooms.FindAsync(classroomId);
 
-        [HttpPost]
-        public async Task<IActionResult> DeleteStudent(string studentId)
-        {
-            var student = await _userManager.FindByIdAsync(studentId);
-            if (student != null)
+            if (classroom != null)
             {
-                await _userManager.DeleteAsync(student);
+                classroom.Name = newName;
+                await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteClassroom(int classroomId)
+        {
+            var classroom = await _context.Classrooms.FindAsync(classroomId);
+
+            if (classroom != null)
+            {
+                _context.Classrooms.Remove(classroom);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateClassroom(string name)
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var classroom = new Classroom { Name = name, TeacherId = userId };
+
+            _context.Classrooms.Add(classroom);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
         }
     }
 }

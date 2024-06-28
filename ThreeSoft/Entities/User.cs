@@ -12,5 +12,6 @@ namespace ThreeSoft.Entities
         public string LastName { get; set; }
         public ICollection<Classroom> TeacherClassrooms { get; set; }
         public ICollection<Classroom> StudentClassrooms { get; set; }
+        public string? ParentPin { get; set; }
     }
 }

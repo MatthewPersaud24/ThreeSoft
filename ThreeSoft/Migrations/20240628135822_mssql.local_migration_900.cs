@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ThreeSoft.Migrations
 {
     /// <inheritdoc />
-    public partial class mssqllocal_migration_803 : Migration
+    public partial class mssqllocal_migration_900 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,6 +34,7 @@ namespace ThreeSoft.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ParentPin = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -161,6 +162,26 @@ namespace ThreeSoft.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Checklists",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Checklists", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Checklists_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Classrooms",
                 columns: table => new
                 {
@@ -187,7 +208,8 @@ namespace ThreeSoft.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Content = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IsLocked = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -196,6 +218,27 @@ namespace ThreeSoft.Migrations
                         name: "FK_Notes_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ChecklistTasks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Task = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false),
+                    ChecklistId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChecklistTasks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ChecklistTasks_Checklists_ChecklistId",
+                        column: x => x.ChecklistId,
+                        principalTable: "Checklists",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -229,9 +272,9 @@ namespace ThreeSoft.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "23b26f84-736a-4918-957a-2300f2df96dd", null, "Teacher", "TEACHER" },
-                    { "958c748b-92a7-4181-9585-18efc7d264d9", null, "Admin", "ADMIN" },
-                    { "b969d8ff-1d34-4ef1-ac54-ca82aa74b1f2", null, "Student", "STUDENT" }
+                    { "065aefb1-c4b0-4792-bbaf-d07f971a79ac", null, "Student", "STUDENT" },
+                    { "5029db1b-6a47-4d04-9e83-a36c90201d29", null, "Admin", "ADMIN" },
+                    { "887c1840-c6c4-4a3a-b1b1-04c1e7209e22", null, "Teacher", "TEACHER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -274,6 +317,16 @@ namespace ThreeSoft.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Checklists_UserId",
+                table: "Checklists",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ChecklistTasks_ChecklistId",
+                table: "ChecklistTasks",
+                column: "ChecklistId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Classrooms_TeacherId",
                 table: "Classrooms",
                 column: "TeacherId");
@@ -308,6 +361,9 @@ namespace ThreeSoft.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "ChecklistTasks");
+
+            migrationBuilder.DropTable(
                 name: "ClassroomStudent");
 
             migrationBuilder.DropTable(
@@ -315,6 +371,9 @@ namespace ThreeSoft.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Checklists");
 
             migrationBuilder.DropTable(
                 name: "Classrooms");

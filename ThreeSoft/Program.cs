@@ -7,10 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-//get the connection string from the appsettings:
+// Get the connection string from the appsettings:
 string connstr = builder.Configuration.GetConnectionString("ThreeSoftDB");
 
-// Using connection string as we add the DB contect to the 
+// Using connection string as we add the DB context to the 
 // DI container's services, specifying that we are using SQL server:
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connstr));
 
@@ -39,6 +39,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

@@ -1,0 +1,120 @@
+﻿@model ThreeSoft.Models.InteractViewModel
+
+@{
+    ViewData["Title"] = "Interact with Student";
+}
+
+<section class="section">
+    <div class="container">
+        <h1 class="title has-text-centered">Interact with @Model.Student.FirstName @Model.Student.LastName</h1>
+
+        <h2 class="subtitle">Notes</h2>
+        <ul>
+            @foreach (var note in Model.Notes)
+            {
+                <li>
+                    @note.Content
+                    @if (note.IsLocked)
+                    {
+                        <span class="tag is-warning">Locked</span>
+                    }
+                </li>
+            }
+        </ul>
+
+        <form asp-action="AddNote" method="post">
+            <input type="hidden" name="studentId" value="@Model.Student.Id" />
+            <div class="field">
+                <label class="label">New Note</label>
+                <div class="control">
+                    <textarea name="content" class="textarea" placeholder="Enter your note"></textarea>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox">
+                        <input type="checkbox" name="isLocked">
+                        Lock note
+                    </label>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <button type="submit" class="button is-primary">Add Note</button>
+                </div>
+            </div>
+        </form>
+
+        <h2 class="subtitle">Checklists</h2>
+        <div>
+            @foreach (var checklist in Model.Checklists)
+            {
+                <div class="box">
+                    <h3 class="title is-4">@checklist.Title</h3>
+                    <ul>
+                        @foreach (var task in checklist.Tasks)
+                        {
+                            <li>
+                                @if (task.IsCompleted)
+                                {
+                                    <strike>@task.Task</strike>
+                                }
+                                else
+                                {
+                                    @task.Task
+                                }
+                                <form asp-action="ToggleChecklistTaskCompletion" method="post" style="display:inline;">
+                                    <input type="hidden" name="taskId" value="@task.Id" />
+                                    <button type="submit" class="button is-small is-success">
+                                        @if (task.IsCompleted)
+                                        {
+                                            <span>Undo</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Complete</span>
+                                        }
+                                    </button>
+                                </form>
+                                <form asp-action="DeleteChecklistTask" method="post" style="display:inline;">
+                                    <input type="hidden" name="taskId" value="@task.Id" />
+                                    <button type="submit" class="button is-small is-danger">Delete</button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
+                    <form asp-action="AddChecklistTask" method="post" class="field has-addons">
+                        <input type="hidden" name="checklistId" value="@checklist.Id" />
+                        <div class="control">
+                            <input type="text" name="task" placeholder="New Task" class="input" />
+                        </div>
+                        <div class="control">
+                            <button type="submit" class="button is-primary">Add Task</button>
+                        </div>
+                    </form>
+                    <form asp-action="DeleteChecklist" method="post" class="field is-grouped">
+                        <input type="hidden" name="checklistId" value="@checklist.Id" />
+                        <div class="control">
+                            <button type="submit" class="button is-danger">Delete Checklist</button>
+                        </div>
+                    </form>
+                </div>
+            }
+        </div>
+
+        <form asp-action="AddChecklist" method="post">
+            <input type="hidden" name="studentId" value="@Model.Student.Id" />
+            <div class="field">
+                <label class="label">New Checklist</label>
+                <div class="control">
+                    <input type="text" name="title" class="input" placeholder="Enter checklist title" />
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <button type="submit" class="button is-primary">Add Checklist</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>

@@ -20,4 +20,5 @@ namespace ThreeSoft.Entities
 
         public ICollection<User> Students { get; set; }
     }
+
 }

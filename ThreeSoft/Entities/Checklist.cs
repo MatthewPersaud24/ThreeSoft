@@ -8,8 +8,18 @@ namespace ThreeSoft.Entities
 {
     public class Checklist
     {
+        [Key]
         public int Id { get; set; }
-        public string Task { get; set; }
-        public bool IsCompleted { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string Title { get; set; }
+
+        [ForeignKey("User")]
+        public string UserId { get; set; }
+
+        public User User { get; set; }
+
+        public ICollection<ChecklistTask> Tasks { get; set; }
     }
 }
