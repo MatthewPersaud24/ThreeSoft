@@ -24,7 +24,30 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <!-- Additional nav items can be added here if needed -->
+                        @if (_signInManager.Context.User.IsInRole("Teacher"))
+                        {
+                            <li class="nav-item">
+                                <form class="form-inline" asp-controller="Teacher" asp-action="Index" method="post">
+                                    <input type="submit" class="nav-link btn btn-link text-warning" value="Teacher Home Page" />
+                                </form>
+                            </li>
+                        }
+                        else if (_signInManager.Context.User.IsInRole("Student"))
+                        {
+                            <li class="nav-item">
+                                <form class="form-inline" asp-controller="Student" asp-action="Index" method="post">
+                                    <input type="submit" class="nav-link btn btn-link text-warning" value="Student Home Page" />
+                                </form>
+                            </li>
+                        }
+                        else if (_signInManager.Context.User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <form class="form-inline" asp-controller="Admin" asp-action="Index" method="post">
+                                    <input type="submit" class="nav-link btn btn-link text-warning" value="Admin Home Page" />
+                                </form>
+                            </li>
+                        }
                     </ul>
 
                     
