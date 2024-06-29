@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using ThreeSoft.Entities;
 using System.Linq;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
 
 namespace ThreeSoft.Controllers
 {
@@ -47,7 +48,34 @@ namespace ThreeSoft.Controllers
             // Handle user not found if needed
             return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(string userName, string newPassword)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            
+
+            if (user != null)
+            {
+                //generate token
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                //change password
+                var result = await _userManager.ResetPasswordAsync(user, token, newPassword );
+                if (result.Succeeded)
+                {
+         
+                    return RedirectToAction("Index");
+                }
+                // Handle failure if needed
+            }
+            // Handle user not found if needed
+            return RedirectToAction("Index");
+        }
+
     }
+
+
+
 
     public class AdminIndexViewModel
     {
