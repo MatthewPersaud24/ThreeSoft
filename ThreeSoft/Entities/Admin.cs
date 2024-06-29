@@ -8,10 +8,7 @@ namespace ThreeSoft.Entities
 {
     public class Admin : User
     {
-        [Required(ErrorMessage = "Please enter a first name")]
-        public string? firstName { get; set; }
+        
 
-        [Required(ErrorMessage = "Please enter a last name")]
-        public string? lastName { get; set; }
     }
 }

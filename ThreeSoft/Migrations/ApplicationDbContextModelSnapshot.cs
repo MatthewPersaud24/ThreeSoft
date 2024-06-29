@@ -66,19 +66,19 @@ namespace ThreeSoft.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5029db1b-6a47-4d04-9e83-a36c90201d29",
+                            Id = "d1729cb8-c032-4d05-b224-2896194f6ca8",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "887c1840-c6c4-4a3a-b1b1-04c1e7209e22",
+                            Id = "062f29bc-e533-4f21-aeb4-df3b4901795d",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = "065aefb1-c4b0-4792-bbaf-d07f971a79ac",
+                            Id = "f7420de9-31d2-457d-b53c-413678910058",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });

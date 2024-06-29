@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ThreeSoft.Migrations
 {
     /// <inheritdoc />
-    public partial class mssqllocal_migration_900 : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -272,9 +272,9 @@ namespace ThreeSoft.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "065aefb1-c4b0-4792-bbaf-d07f971a79ac", null, "Student", "STUDENT" },
-                    { "5029db1b-6a47-4d04-9e83-a36c90201d29", null, "Admin", "ADMIN" },
-                    { "887c1840-c6c4-4a3a-b1b1-04c1e7209e22", null, "Teacher", "TEACHER" }
+                    { "062f29bc-e533-4f21-aeb4-df3b4901795d", null, "Teacher", "TEACHER" },
+                    { "d1729cb8-c032-4d05-b224-2896194f6ca8", null, "Admin", "ADMIN" },
+                    { "f7420de9-31d2-457d-b53c-413678910058", null, "Student", "STUDENT" }
                 });
 
             migrationBuilder.CreateIndex(

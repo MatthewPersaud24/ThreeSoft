@@ -31,13 +31,25 @@ namespace ThreeSoft.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = model.Username };
-                var result = await _userManager.CreateAsync(user, model.Password);
+                var newUser = new User();
+
+                if (model.UserType == "Student")
+                {
+                    newUser = new Student { FirstName = model.FirstName, LastName = model.LastName, UserName = model.Username };
+                }
+                else if (model.UserType == "Teacher")
+                {
+                    newUser = new Teacher { FirstName = model.FirstName, LastName = model.LastName, UserName = model.Username };                    
+                }
+
+                var result = await _userManager.CreateAsync(newUser, model.Password);
 
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+                    await _userManager.AddToRoleAsync(newUser, model.UserType);
+                    await _signInManager.SignInAsync(newUser, isPersistent: false);
+
+                    return RedirectToAction("Index", model.UserType);
                 }
                 else
                 {
