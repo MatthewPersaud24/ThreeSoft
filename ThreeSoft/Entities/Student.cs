@@ -8,6 +8,10 @@ namespace ThreeSoft.Entities
 {
     public class Student : User
     {
-        
+        public Student() 
+        {
+            isVerified = true;
+        }
+
     }
 }

@@ -35,6 +35,7 @@ namespace ThreeSoft.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ParentPin = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isVerified = table.Column<bool>(type: "bit", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -272,9 +273,9 @@ namespace ThreeSoft.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "062f29bc-e533-4f21-aeb4-df3b4901795d", null, "Teacher", "TEACHER" },
-                    { "d1729cb8-c032-4d05-b224-2896194f6ca8", null, "Admin", "ADMIN" },
-                    { "f7420de9-31d2-457d-b53c-413678910058", null, "Student", "STUDENT" }
+                    { "710bf78e-2d1f-46e3-a8ee-91e6191a2f6b", null, "Teacher", "TEACHER" },
+                    { "cfc4b379-ee73-42c2-83ee-eafacf7e93f3", null, "Student", "STUDENT" },
+                    { "e4fa584d-447e-4670-96c0-6ed159c3b379", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(

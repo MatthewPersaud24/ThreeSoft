@@ -13,5 +13,6 @@ namespace ThreeSoft.Entities
         public ICollection<Classroom> TeacherClassrooms { get; set; }
         public ICollection<Classroom> StudentClassrooms { get; set; }
         public string? ParentPin { get; set; }
+        public bool isVerified { get; set; } = false;
     }
 }

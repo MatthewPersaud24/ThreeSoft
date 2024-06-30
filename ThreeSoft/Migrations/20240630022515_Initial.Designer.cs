@@ -12,7 +12,7 @@ using ThreeSoft.Entities;
 namespace ThreeSoft.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240629030034_Initial")]
+    [Migration("20240630022515_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -69,19 +69,19 @@ namespace ThreeSoft.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d1729cb8-c032-4d05-b224-2896194f6ca8",
+                            Id = "e4fa584d-447e-4670-96c0-6ed159c3b379",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "062f29bc-e533-4f21-aeb4-df3b4901795d",
+                            Id = "710bf78e-2d1f-46e3-a8ee-91e6191a2f6b",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = "f7420de9-31d2-457d-b53c-413678910058",
+                            Id = "cfc4b379-ee73-42c2-83ee-eafacf7e93f3",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
@@ -355,6 +355,9 @@ namespace ThreeSoft.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("isVerified")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

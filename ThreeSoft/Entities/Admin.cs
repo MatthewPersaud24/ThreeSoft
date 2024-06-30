@@ -8,7 +8,10 @@ namespace ThreeSoft.Entities
 {
     public class Admin : User
     {
-        
+        public Admin() 
+        { 
+            isVerified = true;
+        }
 
     }
 }

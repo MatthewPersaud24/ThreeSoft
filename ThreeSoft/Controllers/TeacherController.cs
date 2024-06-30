@@ -18,6 +18,11 @@ namespace ThreeSoft.Controllers
 
         public async Task<IActionResult> Index()
         {
+            
+            //code goes here to check if the teacher is verified
+            //Route them to a not verified page if not verfied
+
+
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var classrooms = await _context.Classrooms
                 .Where(c => c.TeacherId == userId)
