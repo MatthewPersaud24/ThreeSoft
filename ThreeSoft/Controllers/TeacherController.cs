@@ -4,26 +4,33 @@ using ThreeSoft.Entities;
 using ThreeSoft.Models;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace ThreeSoft.Controllers
 {
     public class TeacherController : Controller
     {
+
+        private readonly UserManager<User> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public TeacherController(ApplicationDbContext context)
+        public TeacherController(UserManager<User> userManager, ApplicationDbContext context)
         {
+            _userManager = userManager; 
             _context = context;
         }
 
         public async Task<IActionResult> Index()
         {
             
-            //code goes here to check if the teacher is verified
-            //Route them to a not verified page if not verfied
-
-
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var teacher = await _userManager.FindByIdAsync(userId);
+
+            if (!teacher.isVerified)
+            {
+                return View("Unverified");
+            }
+
             var classrooms = await _context.Classrooms
                 .Where(c => c.TeacherId == userId)
                 .Include(c => c.Students)
