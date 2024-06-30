@@ -92,6 +92,24 @@ namespace ThreeSoft.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> ResetParentPin(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                user.ParentPin = null;
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                // Handle failure if needed
+            }
+            // Handle user not found if needed
+            return RedirectToAction("Index");
+        }
+
 
     }
 

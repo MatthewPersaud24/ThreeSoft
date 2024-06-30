@@ -4,15 +4,14 @@
     ViewData["Title"] = "Home Page";
 }
 <head>
-        <style>
+    <style>
         .hidden {
             display: none;
         }
     </style>
-
 </head>
 
-<h1 style ="margin-bottom: 20px;">Hello Admin</h1>
+<h1 style="margin-bottom: 20px;">Hello Admin</h1>
 
 <section class="section">
     <div class="container">
@@ -39,14 +38,14 @@
                                 <input type="hidden" name="id" value="@user.Id" />
                                 <button type="submit" class="button is-danger is-small">Delete</button>
                             </form>
-                        
+
                             <button type="button" class="button is-danger is-small" onclick="toggleField('@user')">Change Password</button>
-                        
-                            <form asp-action="ChangePassword">
+
+                            <form asp-action="ChangePassword" method="post" style="display:inline;">
                                 <input type="hidden" name="userName" value="@user.UserName"></input>
                                 <div id="@user" class="hidden">
-                                        <input type="password" id="text@user" name = "newPassword"/>
-                                        <button type="submit" class="button is-danger is-small">Confirm Password Change for "@user.UserName"</button>
+                                    <input type="password" id="text@user" name="newPassword" />
+                                    <button type="submit" class="button is-danger is-small">Confirm Password Change for "@user.UserName"</button>
                                 </div>
                             </form>
                         </td>
@@ -115,6 +114,11 @@
                                 <input type="hidden" name="id" value="@student.Id" />
                                 <button type="submit" class="button is-danger is-small">Delete</button>
                             </form>
+
+                            <form asp-action="ResetParentPin" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@student.Id" />
+                                <button type="submit" class="button is-warning is-small">Reset Parent PIN</button>
+                            </form>
                         </td>
                     </tr>
                 }
@@ -122,15 +126,14 @@
         </table>
     </div>
 </section>
-    <script>
-        function toggleField(fieldId) {
-            const field = document.getElementById(fieldId);
-            if (field.classList.contains("hidden")) {
-                field.classList.remove("hidden");
-            } else {
-                field.classList.add("hidden");
-            }
-        }
 
-       
-    </script>
+<script>
+    function toggleField(fieldId) {
+        const field = document.getElementById(fieldId);
+        if (field.classList.contains("hidden")) {
+            field.classList.remove("hidden");
+        } else {
+            field.classList.add("hidden");
+        }
+    }
+</script>
