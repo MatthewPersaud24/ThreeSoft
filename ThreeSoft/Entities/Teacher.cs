@@ -8,10 +8,9 @@ namespace ThreeSoft.Entities
 {
     public class Teacher : User
     { 
-
         public ICollection<Classroom> Classrooms { get; set; }
 
-        public bool isVerified { get; set; } = false;
+
 
     }
 }

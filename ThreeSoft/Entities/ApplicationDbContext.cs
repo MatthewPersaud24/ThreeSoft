@@ -70,7 +70,7 @@ namespace ThreeSoft.Entities
             }
 
             // Static Admin user
-            User staticAdmin = new User { UserName = "Admin", FirstName = "Ronald", LastName = "McDonald", ParentPin = "defaultPin" };
+            User staticAdmin = new User { UserName = "Admin", FirstName = "Ronald", LastName = "McDonald", ParentPin = "defaultPin", isVerified = true };
             if (await userManager.FindByNameAsync(staticAdmin.UserName) == null)
             {
                 var result = await userManager.CreateAsync(staticAdmin, "Admin@1");
@@ -81,7 +81,7 @@ namespace ThreeSoft.Entities
             }
 
             // Static Teacher user
-            User staticTeacher = new User { UserName = "TeacherUser", FirstName = "Teacher", LastName = "Example" };
+            User staticTeacher = new User { UserName = "TeacherUser", FirstName = "Teacher", LastName = "Example" , isVerified = true };
             if (await userManager.FindByNameAsync(staticTeacher.UserName) == null)
             {
                 var result = await userManager.CreateAsync(staticTeacher, "Teacher@1");
@@ -92,7 +92,7 @@ namespace ThreeSoft.Entities
             }
 
             // Static Student user
-            User staticStudent = new User { UserName = "StudentUser", FirstName = "Student", LastName = "Example" };
+            User staticStudent = new User { UserName = "StudentUser", FirstName = "Student", LastName = "Example", isVerified = true };
             if (await userManager.FindByNameAsync(staticStudent.UserName) == null)
             {
                 var result = await userManager.CreateAsync(staticStudent, "Student@1");
