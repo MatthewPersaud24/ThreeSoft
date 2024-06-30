@@ -38,14 +38,18 @@ namespace ThreeSoft.Controllers
                 .Include(c => c.Tasks)
                 .ToListAsync();
 
-            string parentPin = student.ParentPin;
+            var ParentPinViewModel = new ParentPinViewModel
+            {
+                ParentPin = student.ParentPin,
+                ParentUnlocked = false
+            };
 
             var model = new InteractViewModel
             {
                 Student = student,
                 Notes = notes,
                 Checklists = checklists,
-                ParentPin = parentPin
+                Parent = ParentPinViewModel
             };
 
             return View(model);
@@ -82,7 +86,7 @@ namespace ThreeSoft.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            student.ParentPin = model.ParentPin;
+            student.ParentPin = model.Parent.ParentPin;
 
             var result = await _userManager.UpdateAsync(student);
             if (result.Succeeded)
@@ -104,6 +108,28 @@ namespace ThreeSoft.Controllers
         [HttpPost]
         public async Task<IActionResult> ViewParentMessages (InteractViewModel model)
         {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var student = await _userManager.FindByIdAsync(userId);
+
+            if (model.Parent.ParentPin == student.ParentPin)
+            {
+                model.Student = student;
+
+                model.Notes = await _context.Notes
+                    .Where(n => n.UserId == userId && !n.IsLocked)
+                    .ToListAsync();
+
+                model.Checklists = await _context.Checklists
+                    .Where(c => c.UserId == userId)
+                    .Include(c => c.Tasks)
+                    .ToListAsync();
+
+                model.Parent.ParentUnlocked = true;
+
+                model.Parent.ParentPin = null;
+
+                return View("Index", model);
+            }
 
             return RedirectToAction("Index", "Student");
         }

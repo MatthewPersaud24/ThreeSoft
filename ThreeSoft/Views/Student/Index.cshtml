@@ -69,7 +69,7 @@
                 <div class="field">
                     <label class="label">Set Parent PIN</label>
                     <div class="control">
-                        <input type="password" asp-for="ParentPin" class="input" placeholder="Enter a PIN" />
+                        <input type="password" asp-for="Parent.ParentPin" class="input" placeholder="Enter a PIN" />
                     </div>
                 </div>
                 <div class="field">
@@ -79,14 +79,14 @@
                 </div>
             </form>
         }
-        else
+        else if (Model.Parent.ParentUnlocked == false)
         {
             <form asp-action="ViewParentMessages" method="post">
                 <input type="hidden" asp-for="Student.Id" />
                 <div class="field">
                     <label class="label">Enter Parent PIN</label>
                     <div class="control">
-                        <input type="password" asp-for="ParentPin" class="input" placeholder="Enter your PIN" />
+                        <input type="password" asp-for="Parent.ParentPin" class="input" placeholder="Enter your PIN" />
                     </div>
                 </div>
                 <div class="field">
@@ -95,6 +95,14 @@
                     </div>
                 </div>
             </form>
+        }
+        else
+        {
+            <div class="field">
+                <div>PARENT NOTES CAN SHOW UP HERE</div>
+                <div>Still need to write code for it to show up</div>
+                <!--Add more code so parent notes show up and whatnot-->
+            </div>
         }
     </div>
 </section>
