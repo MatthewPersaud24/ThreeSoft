@@ -273,9 +273,9 @@ namespace ThreeSoft.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "710bf78e-2d1f-46e3-a8ee-91e6191a2f6b", null, "Teacher", "TEACHER" },
-                    { "cfc4b379-ee73-42c2-83ee-eafacf7e93f3", null, "Student", "STUDENT" },
-                    { "e4fa584d-447e-4670-96c0-6ed159c3b379", null, "Admin", "ADMIN" }
+                    { "16691efe-cdc5-45cf-bb1d-2f155a59f5b2", null, "Admin", "ADMIN" },
+                    { "8660fc16-44c9-404c-907d-1331bae04c40", null, "Teacher", "TEACHER" },
+                    { "cc0e2981-2d72-42ea-aebf-7fa7d2c68b5a", null, "Student", "STUDENT" }
                 });
 
             migrationBuilder.CreateIndex(
