@@ -30,7 +30,7 @@ namespace ThreeSoft.Controllers
             }
 
             var notes = await _context.Notes
-                .Where(n => n.UserId == userId && !n.IsLocked)
+                .Where(n => n.UserId == userId && n.IsLocked == false)
                 .ToListAsync();
 
             var checklists = await _context.Checklists
@@ -116,8 +116,8 @@ namespace ThreeSoft.Controllers
                 model.Student = student;
 
                 model.Notes = await _context.Notes
-                    .Where(n => n.UserId == userId && !n.IsLocked)
-                    .ToListAsync();
+                          .Where(n => n.UserId == userId)
+                          .ToListAsync();
 
                 model.Checklists = await _context.Checklists
                     .Where(c => c.UserId == userId)

@@ -20,6 +20,6 @@ namespace ThreeSoft.Entities
 
         public User User { get; set; }
 
-        public bool IsLocked { get; set; }
+        public bool IsLocked { get; set; } 
     }
 }

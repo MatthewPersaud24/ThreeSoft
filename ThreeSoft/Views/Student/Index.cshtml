@@ -8,12 +8,16 @@
     <div class="container">
         <h1 class="title has-text-centered">Welcome @Model.Student.FirstName @Model.Student.LastName</h1>
 
-        <h2 class="subtitle">Notes</h2>
+        <h2 class="subtitle">All Notes</h2>
         <ul>
             @foreach (var note in Model.Notes)
             {
                 <li>
                     @note.Content
+                    @if (note.IsLocked)
+                    {
+                        <span class="tag is-warning">Locked</span>
+                    }
                     <form asp-action="ReplyToNote" method="post" style="display:inline;">
                         <input type="hidden" name="noteId" value="@note.Id" />
                         <input type="text" name="reply" placeholder="Reply" class="input is-small" />
@@ -22,6 +26,52 @@
                 </li>
             }
         </ul>
+
+        @if (Model.Parent.ParentUnlocked)
+        {
+            <h2 class="subtitle">Parent Notes</h2>
+            <ul>
+                @foreach (var note in Model.Notes.Where(n => n.IsLocked))
+                {
+                    <li>@note.Content</li>
+                }
+            </ul>
+        }
+
+        @if (string.IsNullOrEmpty(Model.Student.ParentPin))
+        {
+            <form asp-action="SetParentPin" method="post">
+                <input type="hidden" asp-for="Student.Id" />
+                <div class="field">
+                    <label class="label">Set Parent PIN</label>
+                    <div class="control">
+                        <input type="password" asp-for="Parent.ParentPin" class="input" placeholder="Enter a PIN" />
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <button type="submit" class="button is-primary">Set PIN</button>
+                    </div>
+                </div>
+            </form>
+        }
+        else if (!Model.Parent.ParentUnlocked)
+        {
+            <form asp-action="ViewParentMessages" method="post">
+                <input type="hidden" asp-for="Student.Id" />
+                <div class="field">
+                    <label class="label">Enter Parent PIN</label>
+                    <div class="control">
+                        <input type="password" asp-for="Parent.ParentPin" class="input" placeholder="Enter your PIN" />
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <button type="submit" class="button is-primary">View Messages</button>
+                    </div>
+                </div>
+            </form>
+        }
 
         <h2 class="subtitle">Checklists</h2>
         <div>
@@ -46,12 +96,12 @@
                                     <button type="submit" class="button is-small is-success">
                                         @if (task.IsCompleted)
                                         {
-                                        <span>Undo</span>
-                                                    }
+                                            <span>Undo</span>
+                                        }
                                         else
                                         {
-                                           <span>Complete</span>
-                                                    }
+                                            <span>Complete</span>
+                                        }
                                     </button>
                                 </form>
                             </li>
@@ -60,50 +110,5 @@
                 </div>
             }
         </div>
-
-        <h2 class="subtitle">Parent Messages</h2>
-        @if (string.IsNullOrEmpty(Model.Student.ParentPin))
-        {
-            <form asp-action="SetParentPin" method="post">
-                <input type="hidden" asp-for="Student.Id" />
-                <div class="field">
-                    <label class="label">Set Parent PIN</label>
-                    <div class="control">
-                        <input type="password" asp-for="Parent.ParentPin" class="input" placeholder="Enter a PIN" />
-                    </div>
-                </div>
-                <div class="field">
-                    <div class="control">
-                        <button type="submit" class="button is-primary">Set PIN</button>
-                    </div>
-                </div>
-            </form>
-        }
-        else if (Model.Parent.ParentUnlocked == false)
-        {
-            <form asp-action="ViewParentMessages" method="post">
-                <input type="hidden" asp-for="Student.Id" />
-                <div class="field">
-                    <label class="label">Enter Parent PIN</label>
-                    <div class="control">
-                        <input type="password" asp-for="Parent.ParentPin" class="input" placeholder="Enter your PIN" />
-                    </div>
-                </div>
-                <div class="field">
-                    <div class="control">
-                        <button type="submit" class="button is-primary">View Messages</button>
-                    </div>
-                </div>
-            </form>
-        }
-        else
-        {
-            <div class="field">
-                <div>PARENT NOTES CAN SHOW UP HERE</div>
-                <div>Still need to write code for it to show up</div>
-                <!--Add more code so parent notes show up and whatnot-->
-            </div>
-        }
     </div>
 </section>
-
