@@ -12,8 +12,8 @@ using ThreeSoft.Entities;
 namespace ThreeSoft.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240630024127_Initial")]
-    partial class Initial
+    [Migration("20240703041650_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,19 +69,19 @@ namespace ThreeSoft.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "16691efe-cdc5-45cf-bb1d-2f155a59f5b2",
+                            Id = "231e0a68-c3b6-4579-8a7d-e1fd7fa7da5f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "8660fc16-44c9-404c-907d-1331bae04c40",
+                            Id = "3dca6058-ab90-4b79-a34b-2553bbc26114",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = "cc0e2981-2d72-42ea-aebf-7fa7d2c68b5a",
+                            Id = "d59b8c5d-a565-498d-a191-cbe6cce31024",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
@@ -279,14 +279,22 @@ namespace ThreeSoft.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsLocked")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("ParentNoteId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentNoteId");
 
                     b.HasIndex("UserId");
 
@@ -473,11 +481,17 @@ namespace ThreeSoft.Migrations
 
             modelBuilder.Entity("ThreeSoft.Entities.Note", b =>
                 {
+                    b.HasOne("ThreeSoft.Entities.Note", "ParentNote")
+                        .WithMany("Replies")
+                        .HasForeignKey("ParentNoteId");
+
                     b.HasOne("ThreeSoft.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ParentNote");
 
                     b.Navigation("User");
                 });
@@ -485,6 +499,11 @@ namespace ThreeSoft.Migrations
             modelBuilder.Entity("ThreeSoft.Entities.Checklist", b =>
                 {
                     b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("ThreeSoft.Entities.Note", b =>
+                {
+                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("ThreeSoft.Entities.User", b =>

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ThreeSoft.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -210,7 +210,9 @@ namespace ThreeSoft.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Content = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IsLocked = table.Column<bool>(type: "bit", nullable: false)
+                    IsLocked = table.Column<bool>(type: "bit", nullable: false),
+                    ParentNoteId = table.Column<int>(type: "int", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -221,6 +223,11 @@ namespace ThreeSoft.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Notes_Notes_ParentNoteId",
+                        column: x => x.ParentNoteId,
+                        principalTable: "Notes",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -273,9 +280,9 @@ namespace ThreeSoft.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "16691efe-cdc5-45cf-bb1d-2f155a59f5b2", null, "Admin", "ADMIN" },
-                    { "8660fc16-44c9-404c-907d-1331bae04c40", null, "Teacher", "TEACHER" },
-                    { "cc0e2981-2d72-42ea-aebf-7fa7d2c68b5a", null, "Student", "STUDENT" }
+                    { "231e0a68-c3b6-4579-8a7d-e1fd7fa7da5f", null, "Admin", "ADMIN" },
+                    { "3dca6058-ab90-4b79-a34b-2553bbc26114", null, "Teacher", "TEACHER" },
+                    { "d59b8c5d-a565-498d-a191-cbe6cce31024", null, "Student", "STUDENT" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -336,6 +343,11 @@ namespace ThreeSoft.Migrations
                 name: "IX_ClassroomStudent_StudentId",
                 table: "ClassroomStudent",
                 column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notes_ParentNoteId",
+                table: "Notes",
+                column: "ParentNoteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notes_UserId",

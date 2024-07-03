@@ -12,18 +12,28 @@
         <ul>
             @foreach (var note in Model.Notes)
             {
-                <li>
-                    @note.Content
-                    @if (note.IsLocked)
-                    {
-                        <span class="tag is-warning">Locked</span>
-                    }
-                    <form asp-action="ReplyToNote" method="post" style="display:inline;">
-                        <input type="hidden" name="noteId" value="@note.Id" />
-                        <input type="text" name="reply" placeholder="Reply" class="input is-small" />
-                        <button type="submit" class="button is-small is-primary">Reply</button>
-                    </form>
-                </li>
+                @if (note.ParentNote == null)
+                {
+                    <li>
+                        @note.Content
+
+                        @if (note.IsLocked)
+                        {
+                            <span class="tag is-warning">Locked</span>
+                        }
+                        <ul>
+                            @foreach (var reply in note.Replies)
+                            {
+                                <li>@reply.Content</li>
+                            }
+                        </ul>
+                        <form asp-action="ReplyToNote" method="post" style="display:inline;">
+                            <input type="hidden" name="noteId" value="@note.Id" />
+                            <input type="text" name="reply" placeholder="Reply" class="input is-small" />
+                            <button type="submit" class="button is-small is-primary">Reply</button>
+                        </form>
+                    </li>
+                }
             }
         </ul>
 
