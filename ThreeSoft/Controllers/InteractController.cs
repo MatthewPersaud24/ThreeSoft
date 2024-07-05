@@ -26,6 +26,7 @@ namespace ThreeSoft.Controllers
 
             var notes = await _context.Notes
                 .Where(n => n.UserId == studentId)
+                .Include(n => n.Replies)
                 .ToListAsync();
 
             var checklists = await _context.Checklists
@@ -50,7 +51,7 @@ namespace ThreeSoft.Controllers
             {
                 UserId = studentId,
                 Content = content,
-                IsLocked = isLocked
+                IsLocked = isLocked,
             };
 
             _context.Notes.Add(note);

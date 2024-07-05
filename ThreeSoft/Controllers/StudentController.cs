@@ -71,7 +71,30 @@ namespace ThreeSoft.Controllers
         [HttpPost]
         public async Task<IActionResult> ReplyToNote(int noteId, string reply)
         {
-            // Implement note reply logic here.
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            var parentNote = await _context.Notes
+                .Include(n => n.Replies)
+                .FirstOrDefaultAsync(n => n.Id == noteId);
+
+            if (parentNote == null)
+            {
+                return NotFound();
+            }
+
+            var newReply = new Note
+            {
+                Content = reply,
+                UserId = userId,
+                IsLocked = false,
+                ParentNoteId = noteId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            parentNote.Replies.Add(newReply);
+
+            await _context.SaveChangesAsync();
+
             return RedirectToAction("Index");
         }
 

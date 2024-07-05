@@ -20,6 +20,11 @@ namespace ThreeSoft.Entities
 
         public User User { get; set; }
 
-        public bool IsLocked { get; set; } 
+        public bool IsLocked { get; set; }
+
+        public int? ParentNoteId { get; set; }
+        public Note ParentNote { get; set; }
+        public List<Note> Replies { get; set; } = new List<Note>();
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
