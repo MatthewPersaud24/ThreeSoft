@@ -13,10 +13,10 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="~/images/logo.png" alt="ThreeSoft Logo" class="img-fluid" style="max-width: 100px;" />
+                    <img src="~/images/newLogo.png" alt="ThreeSoft Logo" class="img-fluid" style="max-width: 100px;" />
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -50,7 +50,7 @@
                         }
                     </ul>
 
-                    
+
                     <ul class="navbar-nav">
                         @if (_signInManager.IsSignedIn(User))
                         {
@@ -63,14 +63,14 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-warning" asp-controller="Account" asp-action="Register">Register</a>
+                                <a class="nav-link text-primary" asp-controller="Account" asp-action="Register">Register</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-warning" asp-controller="Account" asp-action="LogIn">Login</a>
+                                <a class="nav-link text-primary" asp-controller="Account" asp-action="LogIn">Login</a>
                             </li>
                         }
                     </ul>
-                    
+
 
 
                 </div>
@@ -83,9 +83,9 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted bg-primary text-white py-3">
+    <footer class="border-top footer text-muted bg-dark text-white py-3">
         <div class="container text-center">
-            &copy; 2024 - ThreeSoft
+            &copy; 2024 - ThreeSoft. Need Help? Contact Support: threesoft.team@outlook.com
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

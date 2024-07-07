@@ -14,10 +14,11 @@
             {
                 <div class="box">
                     <h3 class="title is-4">@classroom.Name</h3>
-                    <form asp-action="RenameClassroom" method="post" style="display:inline;">
+                    <form asp-action="RenameClassroom" method="post" style="display:inline;" onsubmit="return validateRenameForm(this);">
                         <input type="hidden" name="classroomId" value="@classroom.Id" />
-                        <input type="text" name="newName" placeholder="Rename Classroom" class="input is-small" />
+                        <input type="text" name="newName" placeholder="Rename Classroom" class="input is-small" required />
                         <button type="submit" class="button is-small is-info">Rename</button>
+                        <span class="text-danger" style="display:none;">New classroom name is required.</span>
                     </form>
                     <form asp-action="DeleteClassroom" method="post" style="display:inline;">
                         <input type="hidden" name="classroomId" value="@classroom.Id" />
@@ -47,9 +48,10 @@
             }
         </div>
 
-        <form asp-action="CreateClassroom" method="post" class="field is-grouped">
+        <form asp-action="CreateClassroom" method="post" class="field is-grouped" onsubmit="return validateCreateForm(this);">
             <div class="control">
-                <input type="text" name="name" placeholder="New Classroom Name" class="input" />
+                <input type="text" name="name" placeholder="New Classroom Name" class="input" required />
+                <span class="text-danger" style="display:none;">New classroom name is required.</span>
             </div>
             <div class="control">
                 <button type="submit" class="button is-primary">Create Classroom</button>
@@ -94,3 +96,29 @@
         }
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        function validateRenameForm(form) {
+            var input = form.querySelector('input[name="newName"]');
+            var error = form.querySelector('span.text-danger');
+            if (input.value.trim() === '') {
+                error.style.display = 'inline';
+                return false;
+            }
+            error.style.display = 'none';
+            return true;
+        }
+
+        function validateCreateForm(form) {
+            var input = form.querySelector('input[name="name"]');
+            var error = form.querySelector('span.text-danger');
+            if (input.value.trim() === '') {
+                error.style.display = 'inline';
+                return false;
+            }
+            error.style.display = 'none';
+            return true;
+        }
+    </script>
+}
