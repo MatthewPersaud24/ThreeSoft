@@ -67,6 +67,8 @@ namespace ThreeSoft.Controllers
                 .Where(u => u.FirstName.Contains(searchTerm) || u.LastName.Contains(searchTerm))
                 .ToListAsync();
 
+            searchResults = searchResults.Where(u => _userManager.IsInRoleAsync(u, "Student").Result).ToList();
+
             var model = new TeacherViewModel
             {
                 Classrooms = classrooms,
