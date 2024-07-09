@@ -4,16 +4,19 @@ using System.Threading.Tasks;
 using ThreeSoft.Entities;
 using System.Linq;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
+using Microsoft.EntityFrameworkCore;
 
 namespace ThreeSoft.Controllers
 {
     public class AdminController : Controller
     {
         private readonly UserManager<User> _userManager;
+        private readonly ApplicationDbContext _context;
 
-        public AdminController(UserManager<User> userManager)
+        public AdminController(UserManager<User> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -38,12 +41,18 @@ namespace ThreeSoft.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user != null)
             {
+                var classrooms = await _context.Classrooms
+                    .Where(c => c.TeacherId == id)
+                    .ToListAsync();
+
+                _context.Classrooms.RemoveRange(classrooms);
+
                 var result = await _userManager.DeleteAsync(user);
                 if (result.Succeeded)
                 {
+                    await _context.SaveChangesAsync();
                     return RedirectToAction("Index");
                 }
-                // Handle failure if needed
             }
             // Handle user not found if needed
             return RedirectToAction("Index");
