@@ -4,9 +4,27 @@
     ViewData["Title"] = "Student Dashboard";
 }
 
+<script>
+    function openFileExplorer() {
+        document.getElementById('fileInput').click(); 
+    }
+    function submitForm() {
+        document.getElementById('importForm').submit();
+    }
+</script>
+
 <section class="section">
     <div class="container">
         <h1 class="title has-text-centered">Welcome @Model.Student.FirstName @Model.Student.LastName</h1>
+
+        <button type="button" class="button is-small is-primary" onclick="openFileExplorer()">Import Plan</button>
+        <form id="importForm" asp-action="ImportPlan" method="post" enctype="multipart/form-data" style="display:none;">
+            <input type="file" name="file" id="fileInput" style="display:none;" onchange="submitForm()" accept=".csv">
+        </form>
+
+        <form asp-action="ExportPlan" method="post" style="display:inline;">
+            <button type="submit" class="button is-small is-primary">Export Plan</button>
+        </form>
 
         <h2 class="subtitle">All Notes</h2>
         <ul>
