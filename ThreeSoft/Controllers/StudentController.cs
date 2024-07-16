@@ -179,25 +179,31 @@ namespace ThreeSoft.Controllers
 
             StringBuilder csvContent = new StringBuilder();
 
+            //saves notes first
             csvContent.AppendLine("Notes:");
-            csvContent.AppendLine("Id,Content,UserId,IsLocked,ParentNoteId,CreatedAt");
+            csvContent.AppendLine("Content,IsLocked,ParentNoteId,CreatedAt");
             foreach (var note in notes)
             {
-                csvContent.AppendLine($"{note.Id},{note.Content},{note.UserId},{note.IsLocked},{note.ParentNoteId},{note.CreatedAt}");
+                csvContent.AppendLine($"{note.Content},{note.IsLocked},{note.ParentNoteId},{note.CreatedAt}");
             }
 
-            csvContent.AppendLine();
+            //saves checklists
             csvContent.AppendLine("Checklists:");
-            csvContent.AppendLine("Id,Title,UserId");
-            csvContent.AppendLine("Tasks:");
-            csvContent.AppendLine("Id,Task,IsCompleted,ChecklistId");
+            csvContent.AppendLine("Title");
+            
             foreach (var checklist in checklists)
             {
-                csvContent.AppendLine($"{checklist.Id},{checklist.Title},{checklist.UserId}");
+                csvContent.AppendLine($"{checklist.Title}");
+
+                //tasks for each checklist are saved directly underneath
+                csvContent.AppendLine("Tasks:");
+                csvContent.AppendLine("Task,IsCompleted");
                 foreach (var task in checklist.Tasks)
                 {
-                    csvContent.AppendLine($"{task.Id},{task.Task},{task.IsCompleted},{task.ChecklistId}");
+                    csvContent.AppendLine($"{task.Task},{task.IsCompleted}");
                 }
+
+                csvContent.AppendLine();
             }
 
             var filename = $"LearningPlan_{student.UserName}_{DateTime.Now:yyyy-MM-dd}.csv";
@@ -219,68 +225,101 @@ namespace ThreeSoft.Controllers
 
             using (var reader = new StreamReader(file.OpenReadStream()))
             {
-                // Skip headers
-                var headers = reader.ReadLine();
-
                 // Process each line
                 while (!reader.EndOfStream)
                 {
                     var line = await reader.ReadLineAsync();
                     var values = line.Split(',');
-                    
+
+                    //Go through notes in .csv
                     if (values[0] == "Notes:")
                     {
+                        var headers = reader.ReadLine(); 
+                        
                         while (!reader.EndOfStream)
                         {
-                            var noteLine = await reader.ReadLineAsync();
-                            if (noteLine == "Checklists:")
+                            line = await reader.ReadLineAsync();
+                            values = line.Split(','); 
+                            
+                            if (line == "Checklists:" || line == "Tasks:")
                                 break;
 
-                            var noteValues = noteLine.Split(',');
+                            var parentNoteId = values[2];
+                            int? parentNoteIdValue = null;
+                            if (!string.IsNullOrEmpty(parentNoteId))
+                            {
+                                if (int.TryParse(parentNoteId, out int parsedParentNoteId))
+                                {
+                                    parentNoteIdValue = parsedParentNoteId;
+                                }
+                            }
+
+                            //creates note
                             var note = new Note
                             {
-                                Id = int.Parse(noteValues[0]),
-                                Content = noteValues[1],
-                                UserId = noteValues[2],
-                                IsLocked = bool.Parse(noteValues[3]),
-                                ParentNoteId = int.Parse(noteValues[4]),
-                                CreatedAt = DateTime.Parse(noteValues[5])
+                                Content = values[0],
+                                UserId = userId,
+                                IsLocked = bool.Parse(values[1]),
+                                ParentNoteId = parentNoteIdValue,
+                                CreatedAt = DateTime.Parse(values[3])
                             };
+
                             _context.Notes.Add(note);
                         }
                     }
 
-                    // Import Checklists and Tasks
+                    //go through checklists and tasks
                     if (values[0] == "Checklists:")
                     {
+                        //Skip headers ("Title, UserId")
+                        line = reader.ReadLine();
+                        int checklistId = 0;
+
                         while (!reader.EndOfStream)
                         {
-                            var checklistLine = await reader.ReadLineAsync();
-                            if (checklistLine == "Tasks:")
+                            line = await reader.ReadLineAsync();
+                            values = line.Split(',');
+
+                            //tasks for the specified list
+                            if (line == "Tasks:")
+                            {
+                                //Skip headers ("Task, IsCompleted")
+                                line = reader.ReadLine();
+
+                                while (!reader.EndOfStream)
+                                {
+                                    line = await reader.ReadLineAsync();
+                                    values = line.Split(',');
+
+                                    //breaks when no more tasks for specified list
+                                    if (line == "")
+                                        break;
+
+                                    var task = new ChecklistTask
+                                    {
+                                        Task = values[0],
+                                        IsCompleted = bool.Parse(values[1]),
+                                        ChecklistId = checklistId
+                                    };
+                                    _context.ChecklistTasks.Add(task);
+                                }
+                            }
+                            else if (line == "")
                                 break;
 
-                            var checklistValues = checklistLine.Split(',');
-                            var checklist = new Checklist
+                            //creates new checklist
+                            else
                             {
-                                Id = int.Parse(checklistValues[0]),
-                                Title = checklistValues[1],
-                                UserId = checklistValues[2]
-                            };
-                            _context.Checklists.Add(checklist);
-                        }
+                                var checklist = new Checklist
+                                {
+                                    Title = values[0],
+                                    UserId = userId
+                                };
+                                _context.Checklists.Add(checklist);
+                                await _context.SaveChangesAsync();
 
-                        while (!reader.EndOfStream)
-                        {
-                            var taskLine = await reader.ReadLineAsync();
-                            var taskValues = taskLine.Split(',');
-                            var task = new ChecklistTask
-                            {
-                                Id = int.Parse(taskValues[0]),
-                                Task = taskValues[1],
-                                IsCompleted = bool.Parse(taskValues[2]),
-                                ChecklistId = int.Parse(taskValues[3])
-                            };
-                            _context.ChecklistTasks.Add(task);
+                                checklistId = checklist.Id;
+                            }
                         }
                     }
                 }
