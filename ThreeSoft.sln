@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThreeSoft", "ThreeSoft\ThreeSoft.csproj", "{F11CC858-FDE9-4E8E-AFE0-5CDDD70FAA31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThreeSoft", "ThreeSoft\ThreeSoft.csproj", "{F11CC858-FDE9-4E8E-AFE0-5CDDD70FAA31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProjectCapstone", "UnitTestProjectCapstone\UnitTestProjectCapstone.csproj", "{3F278238-7204-4181-AEC1-AEC1AC2F8BD3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F11CC858-FDE9-4E8E-AFE0-5CDDD70FAA31}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F11CC858-FDE9-4E8E-AFE0-5CDDD70FAA31}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F11CC858-FDE9-4E8E-AFE0-5CDDD70FAA31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F278238-7204-4181-AEC1-AEC1AC2F8BD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F278238-7204-4181-AEC1-AEC1AC2F8BD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F278238-7204-4181-AEC1-AEC1AC2F8BD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F278238-7204-4181-AEC1-AEC1AC2F8BD3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
