@@ -27,7 +27,7 @@
             <div class="field">
                 <label class="label">New Note</label>
                 <div class="control">
-                    <textarea name="content" class="textarea" placeholder="Enter your note"></textarea>
+                    <textarea name="content" class="textarea" placeholder="Enter your note" > </textarea>
                 </div>
             </div>
             <div class="field">
@@ -85,6 +85,7 @@
                     </ul>
                     <form asp-action="AddChecklistTask" method="post" class="field has-addons">
                         <input type="hidden" name="checklistId" value="@checklist.Id" />
+                        <input type="hidden" name="studentId" value="@Model.Student.Id" />
                         <div class="control">
                             <input type="text" name="task" placeholder="New Task" class="input" />
                         </div>

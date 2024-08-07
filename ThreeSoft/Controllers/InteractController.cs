@@ -47,15 +47,17 @@ namespace ThreeSoft.Controllers
         [HttpPost]
         public async Task<IActionResult> AddNote(string studentId, string content, bool isLocked)
         {
-            var note = new Note
-            {
-                UserId = studentId,
-                Content = content,
-                IsLocked = isLocked,
-            };
+            if (content != null) {
+                var note = new Note
+                {
+                    UserId = studentId,
+                    Content = content,
+                    IsLocked = isLocked,
+                };
 
-            _context.Notes.Add(note);
-            await _context.SaveChangesAsync();
+                _context.Notes.Add(note);
+                await _context.SaveChangesAsync();
+            }
 
             return RedirectToAction("Index", new { studentId });
         }
@@ -63,32 +65,36 @@ namespace ThreeSoft.Controllers
         [HttpPost]
         public async Task<IActionResult> AddChecklist(string studentId, string title)
         {
-            var checklist = new Checklist
-            {
-                UserId = studentId,
-                Title = title
-            };
+            if (title != null) {
+                var checklist = new Checklist
+                {
+                    UserId = studentId,
+                    Title = title
+                };
 
-            _context.Checklists.Add(checklist);
-            await _context.SaveChangesAsync();
+                _context.Checklists.Add(checklist);
+                await _context.SaveChangesAsync();
+            }
 
             return RedirectToAction("Index", new { studentId });
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddChecklistTask(int checklistId, string task)
+        public async Task<IActionResult> AddChecklistTask(string studentId, int checklistId, string task)
         {
-            var checklistTask = new ChecklistTask
+            if (task != null)
             {
-                ChecklistId = checklistId,
-                Task = task
-            };
+                var checklistTask = new ChecklistTask
+                {
+                    ChecklistId = checklistId,
+                    Task = task
+                };
 
-            _context.ChecklistTasks.Add(checklistTask);
-            await _context.SaveChangesAsync();
+                _context.ChecklistTasks.Add(checklistTask);
+                await _context.SaveChangesAsync();
+            }
 
-            var checklist = await _context.Checklists.FindAsync(checklistId);
-            return RedirectToAction("Index", new { studentId = checklist.UserId });
+            return RedirectToAction("Index", new { studentId });
         }
 
         [HttpPost]
