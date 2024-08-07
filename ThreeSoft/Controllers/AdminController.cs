@@ -61,21 +61,22 @@ namespace ThreeSoft.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangePassword(string userName, string newPassword)
         {
-            var user = await _userManager.FindByNameAsync(userName);
-            
+            if (newPassword != null) { 
+                var user = await _userManager.FindByNameAsync(userName);
 
-            if (user != null)
-            {
-                //generate token
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                //change password
-                var result = await _userManager.ResetPasswordAsync(user, token, newPassword );
-                if (result.Succeeded)
+                if (user != null)
                 {
+                    //generate token
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    //change password
+                    var result = await _userManager.ResetPasswordAsync(user, token, newPassword );
+                    if (result.Succeeded)
+                    {
          
-                    return RedirectToAction("Index");
+                        return RedirectToAction("Index");
+                    }
+                    // Handle failure if needed
                 }
-                // Handle failure if needed
             }
             // Handle user not found if needed
             return RedirectToAction("Index");
