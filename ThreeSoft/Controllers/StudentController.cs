@@ -183,10 +183,10 @@ namespace ThreeSoft.Controllers
 
             //saves notes first
             csvContent.AppendLine("Notes:");
-            csvContent.AppendLine("Content,IsLocked,ParentNoteId,CreatedAt");
+            csvContent.AppendLine("IsLocked,ParentNoteId,CreatedAt,Content");
             foreach (var note in notes)
             {
-                csvContent.AppendLine($"{note.Content},{note.IsLocked},{note.ParentNoteId},{note.CreatedAt}");
+                csvContent.AppendLine($"{note.IsLocked},{note.ParentNoteId},{note.CreatedAt},{note.Content}");
             }
 
             //saves checklists
@@ -246,7 +246,7 @@ namespace ThreeSoft.Controllers
                             if (line == "Checklists:" || line == "Tasks:")
                                 break;
 
-                            var parentNoteId = values[2];
+                            var parentNoteId = values[1];
                             int? parentNoteIdValue = null;
                             if (!string.IsNullOrEmpty(parentNoteId))
                             {
@@ -259,11 +259,11 @@ namespace ThreeSoft.Controllers
                             //creates note
                             var note = new Note
                             {
-                                Content = values[0],
+                                Content = string.Join(",", values.Skip(3)),
                                 UserId = userId,
-                                IsLocked = bool.Parse(values[1]),
+                                IsLocked = bool.Parse(values[0]),
                                 ParentNoteId = parentNoteIdValue,
-                                CreatedAt = DateTime.Parse(values[3])
+                                CreatedAt = DateTime.Parse(values[2])
                             };
 
                             _context.Notes.Add(note);
